@@ -1,6 +1,6 @@
 <hr>
 <h1 align="center">flem-ppe-backend</h1>
-<p align=center><i align="center">Aplicação Backend para o Portal Programa Primeiro Emprego, para o cliente FLEM.</i></p>
+<p align=center><i align="center">Aplicação Backend para o Portal PPE, para o cliente FLEM.</i></p>
 <hr>
 
 <div align="center">
@@ -18,7 +18,7 @@
 
 </div>
 
-Essa aplicação tem como função servir de Backend para o Portal Primeiro Emprego, um novo conceito de sistema que integra funcionalidades, hoje separadas, de um dos serviços essenciais do cliente (FLEM).
+Essa aplicação tem como função servir de Backend para o Portal Projeto Primeiro Emprego, um novo conceito de sistema que integra funcionalidades, hoje separadas, de um dos serviços essenciais do cliente (FLEM).
 
 <br>
 
@@ -40,8 +40,8 @@ Essa aplicação tem como função servir de Backend para o Portal Primeiro Empr
 
 ## Objetivo
 
-- Apresentar uma nova solução informatizada que facilite, dinamize e aumente a produtividade dos sistemas computacionais que giram em torno do Programa Primeiro Emprego
-- Fornecer de maneira segura, confiável e precisa, dados relacionados ao Programa Primeiro Emprego, seguindo os Princípios Básicos de Desenvolvimento, para garantir a sustentabilidade, manutenibilidade e confiabilidade do Software, melhorando sua performance no geral
+- Apresentar uma nova solução informatizada que facilite, dinamize e aumente a produtividade dos sistemas computacionais que giram em torno do PPE
+- Fornecer de maneira segura, confiável e precisa, dados relacionados ao PPE, seguindo os Princípios Básicos de Desenvolvimento, para garantir a sustentabilidade, manutenibilidade e confiabilidade do Software, melhorando sua performance no geral
 - Promover documentação clara e densa o suficiente para discriminar processos e permitir que o Software seja facilmente mantido por qualquer profissional da área de Desenvolvimento
 
 <br>
@@ -106,7 +106,6 @@ Para testar a aplicação, crie um arquivo .env com as seguintes variáveis de a
 
 | Variável                 | Uso  |
 | ------------------- | -------|
-| `NEXT_PUBLIC_PORT=` | Define porta para uso na execução do Node |
 |`NEXT_PUBLIC_DATABASE_URL=`          | Define o endereço do Servidor de BD e credenciais para acesso, de acordo com as especificações da biblioteca [Prisma.io](https://www.prisma.io/docs/getting-started/setup-prisma/start-from-scratch/relational-databases/connect-your-database-node-sqlserver)| |
 |`NEXT_PUBLIC_UPLOAD_TEMP_DIR=`          | Diretório temporário de armazenamento do upload de arquivo|
 
