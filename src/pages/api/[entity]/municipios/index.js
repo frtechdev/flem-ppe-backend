@@ -1,44 +1,47 @@
-import axios from "axios";
-import { allowCors } from "utils/allowCors";
+import { fetchMunicipios } from "controller/api";
+import { allowCors } from "services/apiAllowCors";
 
+
+/**
+ * Fornece municípios e listas de municípios, conforme critérios (id e nome do município).
+ * Recebe um request HTTP com os seguintes parâmetros:
+ * entity - a entidade do Projeto (Bahia, Tocantins etc). É dinamicamente
+ * atribuído pelo caminho da requisição à API.
+ * id - o ID do município.
+ * demandante - o nome do demandante.
+ * @param {Object} req HTTP request.
+ * @param {Object} res HTTP response
+ * @returns HTTP response como JSON contendo a resposta da query consultada.
+ */
 const handler = async (req, res) => {
   try {
-    const {entity, id, municipio} = req.query;
-    const fetch = await fetchMunicipios(entity);
-    const munic = fetch.data.map((item) => {
-      if (item.id == id) {
-        return {
-          id: item.id,
-          municipio: item.nome,
-        };
-      } else if (item.municipio == municipio) {
-        return {
-          id: item.id,
-          municipio: item.nome,
-        };
+    if (req.method === "GET") {
+      const { entity, id, municipio } = req.query;
+      //EM CARÁTER DE TESTE, ESTÁ GERANDO VIA API EXTERNA. ALTERAR PARA CONSULTA VIA BD INTERNO APÓS
+      // CRIAÇÃO DO ESQUEMA.
+      const fetch = await fetchMunicipios(entity);
+      if (id || municipio) {
+        const munic = fetch.filter((item) => {
+          if (item.id === id || item.municipio === municipio) {
+            return {
+              id: item.id,
+              municipio: item.nome,
+            };
+          }
+        });
+        return res.status(200).json({ status: "ok", munic });
+      } else {
+        const munic = fetch;
+        return res.status(200).json({ status: "ok", munic });
       }
-    });
-    return res
-      .status(200)
-      .setHeader("Acess-Control-Allow-Origin", "*")
-      .json({status: "ok", munic});
+    } else if (req.method === "PUT") {
+      // CRIAR MÉTODO PUT PARA INSERÇÃO NO BD
+    } else {
+      return res.status(405).json({ status: 405, message: "METHOD NOT ALLOWED" });
+    }
   } catch (error) {
-    return res
-      .status(500)
-      .setHeader("Acess-Control-Allow-Origin", "*")
-      .json({ error: error.message });
+    return res.status(500).json({ status: 500, message: "FALHA AO PROCESSAR A SOLICITAÇÃO HTTP.", error: error.message });
   }
 };
-
-async function fetchMunicipios(entity) {
-  try {
-    const url = `${process.env.NEXT_PUBLIC_API_MUNIC}/${entity}/municipios`;
-    return await axios.get(url);
-  } catch (error) {
-    //const url = `${process.env.NEXT_PUBLIC_API_MUNIC_FALLBACK}/${entity}`
-    const url = `${process.env.NEXT_PUBLIC_API_MUNIC}/${entity}/municipios`;
-    return await axios.get(url);
-  }
-}
 
 export default allowCors(handler);

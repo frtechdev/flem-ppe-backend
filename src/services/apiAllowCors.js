@@ -1,8 +1,13 @@
 import NextCors from "nextjs-cors";
+/**
+ * Utilitário para dar override sobre erro do CORS com direcionamentos HTTP.
+ * @param {Function} fn função contendo a requisição ou o objeto da rota.
+ * @returns rota já trabalhada com os headers de segurança
+ */
 export const allowCors = (fn) => async (req, res) => {
   res.setHeader("Access-Control-Allow-Credentials", true);
   res.setHeader("Access-Control-Allow-Origin", "*");
-  // another common pattern
+  // INCLUIR SE NECESSÁRIO:
   //res.setHeader("Access-Control-Allow-Origin", req.headers.origin);
   res.setHeader(
     "Access-Control-Allow-Methods",
@@ -18,12 +23,3 @@ export const allowCors = (fn) => async (req, res) => {
   }
   return await fn(req, res);
 };
-// export const allowCors = (fn) => async (req, res) => {
-//   await NextCors(req, res, {
-//     // Options
-//     methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
-//     origin: "*",
-//     optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
-//   });
-//   return await fn(req, res);
-// };
