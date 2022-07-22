@@ -6,6 +6,15 @@ import {
 
 const phoneUtil = new PhoneNumberUtil();
 
+/**
+ * Converte campo de texto contendo número de telefone
+ * sem formatação para um formato contendo DDD e número.
+ * Valida o campo e retorna se o número de telefone está
+ * válido, detectando o DDD e o prefixo do número inserido.
+ * @param {String} number Número de telefone.
+ * @param {String} countryCode Código do país.
+ * @returns Número de telefone no formato DDD+Número 
+ */
 export const phoneNumberFixer = (number, countryCode) => {
   if (number === null) {
     return {
@@ -31,21 +40,6 @@ export const phoneNumberFixer = (number, countryCode) => {
         default:
           return rawNumber.slice(3)
       }
-      // if (phoneUtil.getNumberType(number) === PhoneNumberType.FIXED_LINE) {
-      //   return rawNumber;
-      // }
-      // if (
-      //   phoneUtil.getNumberType(number) === PhoneNumberType.MOBILE &&
-      //   rawNumber.length === 16
-      // ) {
-      //   return rawNumber.slice(0, 7) + 9 + rawNumber.slice(7, 16);
-      // }
-      // if (
-      //   phoneUtil.getNumberType(number) === PhoneNumberType.MOBILE &&
-      //   rawNumber.length === 17
-      // ) {
-      //   return rawNumber;
-      // }
     };
     const output = {
       formatted: fixedOrMobileFormatter(phoneNumber),

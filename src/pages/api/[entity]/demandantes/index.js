@@ -1,73 +1,53 @@
-import axios from "axios";
-import { allowCors } from "utils/allowCors";
+import { fetchDemandantes } from "controller/api";
+import { allowCors } from "services/apiAllowCors";
 
+/**
+ * Fornece demandantes e listas de demandantes, conforme critérios (sigla e nome do demandante).
+ * Recebe um request HTTP com os seguintes parâmetros:
+ * entity - a entidade do Projeto (Bahia, Tocantins etc). É dinamicamente
+ * atribuído pelo caminho da requisição à API.
+ * sigla - a sigla do demandante.
+ * demandante - o nome do demandante.
+ * @param {Object} req HTTP request.
+ * @param {Object} res HTTP response
+ * @returns HTTP response como JSON contendo a resposta da query consultada.
+ */
 const handler = async (req, res) => {
   try {
-    const {entity, sigla, demandante} =  req.query;
-    const fetch = await fetchDemandantes(entity);
-    if (sigla) {
-      const demand = fetch.data
-        .filter((item) => item.sigla == sigla)
-        .map((item2) => {
+    if (req.method === "GET") {
+      const { entity, sigla, demandante } = req.query;
+      //EM CARÁTER DE TESTE, ESTÁ GERANDO VIA API EXTERNA. ALTERAR PARA CONSULTA VIA BD INTERNO APÓS
+      // CRIAÇÃO DO ESQUEMA.
+      const fetch = await fetchDemandantes(entity);
+      if (sigla || demandante) {
+        const demand = fetch.filter((item) => {
+          if (item.sigla === sigla || item.demandante === demandante) {
+            return {
+              sigla: item.sigla,
+              demandante: item.demandante,
+            };
+          }
+        });
+        return res.status(200).json({ status: "ok", demand });
+      } else {
+        const demand = fetch.map((item) => {
           return {
-            sigla: item2.sigla,
-            demandante: item2.nome,
+            sigla: item.sigla,
+            demandante: item.demandante,
           };
         });
-      return (
-        res
-          .status(200)
-          .json({status: "ok", demand})
-      );
-    } else if (demandante) {
-      const demand = fetch.data
-        .filter((item) => item.demandante == demandante)
-        .map((item2) => {
-          return {
-            sigla: item2.sigla,
-            demandante: item2.nome,
-          };
-        });
-      return (
-        res
-          .status(200)
-          .json({status: "ok", demand})
-      );
-    } else {
-      const demand = fetch.data.map((item) => {
-        return {
-          sigla: item.sigla,
-          demandante: item.nome,
-        };
-      });
-      return (
-        res
-          .status(200)
-          .json({status: "ok", demand})
-      );
+        return res.status(200).json({ status: "ok", demand });
+      }
+    }
+    else if (req.method === "PUT"){
+      // CRIAR MÉTODO PUT PARA INSERÇÃO NO BD
+    }
+    else{
+      return res.status(405).json({ status: 405, message: "METHOD NOT ALLOWED" });
     }
   } catch (error) {
-    return (
-      res
-        .status(500)
-        .json({ error: error.message })
-    );
+    return res.status(500).json({ status: 500, message: "FALHA AO PROCESSAR A SOLICITAÇÃO HTTP.", error: error.message });
   }
 };
-
-async function fetchDemandantes(entity) {
-  try {
-    switch (entity) {
-      case "ba": {
-        return await axios.get(process.env.NEXT_PUBLIC_BA_API_DEMAND);
-      }
-      default: {
-        break;
-      }
-    }
-  } catch (error) {
-    //return await axios.get(process.env.NEXT_PUBLIC_BA_API_DEMAND);
-  }
-}
 
 export default allowCors(handler);
